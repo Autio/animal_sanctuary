@@ -5,16 +5,18 @@ using UnityEngine;
 public class Wallaby : MonoBehaviour {
 
     GameObject gm;
+    public float hopForce = 500.0f;
     enum states { idle, approaching, departing, roaming, findingFood, eating}
     states currentState;
     private Transform desiredFood;
-    private float threshold = 10.0f; // how close to food before food finding ends
-    
+    private float threshold = 2.0f; // how close to food before food finding ends
+    private float hopTimer;
     // Use this for initialization
 	void Start () {
         currentState = states.findingFood;
         gm = GameObject.Find("GameManager");
         Debug.Log("Wallaby born");
+        hopTimer = Random.Range(0.6f, 1.2f);
     }
 
     // Update is called once per frame
@@ -48,12 +50,22 @@ public class Wallaby : MonoBehaviour {
         else
         {
             // move towards seed
-            Debug.Log("Helloe");
-            float distance = (transform.position - desiredFood.position).magnitude;
-            Debug.Log(distance.ToString());
-            transform.Translate((transform.position - desiredFood.position) * Time.deltaTime);
+            hopTimer -= Time.deltaTime;
+            if(hopTimer<0)
+            {
+                hopTimer = Random.Range(0.6f, 1.2f);
+
+                Debug.Log("Hopping");
+                float distance  = (transform.position - desiredFood.position).magnitude;
+                Debug.Log(distance.ToString());
+                Vector3 dir =  ( desiredFood.position - transform.position).normalized;
+
+                GetComponent<Rigidbody>().AddForce(dir * hopForce);
+
+            }
+            //transform.Translate((transform.position - desiredFood.position) * Time.deltaTime);
             // if close to food start eating
-            if((transform.position - desiredFood.position).magnitude < threshold)
+            if ((transform.position - desiredFood.position).magnitude < threshold)
             {
                 StartEating();
             }

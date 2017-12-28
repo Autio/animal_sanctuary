@@ -47,7 +47,7 @@ public class Player : MonoBehaviour {
 
 		if(Input.GetKeyDown(KeyCode.T))
         {
-            heldObject = GameObject.Find("Hold");
+         //   heldObject = GameObject.Find("Hold");
             Throw(700.0f);
         }
 
